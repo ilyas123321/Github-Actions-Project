@@ -23,15 +23,21 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v6
 
-    - name: Run Trivy Scan
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
+    - name: Install Trivy
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+        echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+        sudo apt-get update
+        sudo apt-get install -y trivy
 
-    - name: Upload Trivy Results
-      uses: github/codeql-action/upload-sarif@v2
+    - name: Run Trivy FS Scan
+      run: trivy fs --format table -o trivy-report.txt .
+
+    - name: gileaks scan
+      uses: zricethezav/gitleaks-action@v1.3.0
       with:
-        sarif_file: 'trivy-results.sarif'
+        args: "--path=. --report-path=gitleaks-report.json --report-format=json"
+
+    
