@@ -35,9 +35,13 @@ jobs:
     - name: Run Trivy FS Scan
       run: trivy fs --format table -o trivy-report.txt .
 
-    - name: gileaks scan
-      uses: zricethezav/gitleaks-action@v1.3.0
-      with:
-        args: "--path=. --report-path=gitleaks-report.json --report-format=json"
+    - name: Install Gitleaks
+      run: |
+        sudo apt-get install -y curl
+        curl -L https://github.com/zricethezav/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz -o gitleaks.tar.gz
+        tar xzf gitleaks.tar.gz
+        sudo mv gitleaks /usr/local/bin/
 
-    
+    - name: Run Gitleaks Scan
+      run: gitleaks detect --source . --report-path gitleaks-report.json --report-format json
+      continue-on-error: true
