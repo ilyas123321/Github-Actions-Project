@@ -1,15 +1,29 @@
-name: CICD Pipeline
+# name: CICD Pipeline
+
+# on:
+#   push:
+#     branches: [ main ]
+
+# jobs:
+#   compile:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     # - uses: actions/checkout@v4
+#     - name: Print Hello World
+#       run: echo "Hello from github actins"
+
+name: Hello World Workflow
 
 on:
-  push:
+  push:        # runs whenever code is pushed to GitHub
     branches: [ main ]
 
 jobs:
-  compile:
+  say-hello:
     runs-on: ubuntu-latest
 
     steps:
-    # - uses: actions/checkout@v4
-    - name: Print Hello World
-      run: echo "Hello from github actins"
+      - name: Print Hello
+        run: echo "Hello from GitHub Actions!"
 
